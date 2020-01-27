@@ -1,5 +1,9 @@
 package ru.sbt.javaschool.easychat.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -7,14 +11,17 @@ import java.util.Set;
 @Table(name = "person")
 public class Person {
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator="increment")
+    @GenericGenerator(name="increment", strategy = "increment")
     @Column(name = "id", unique = true, nullable = false)
+    @JsonIgnore
     private long id;
 
     @Column(name = "nickname", length = 30, unique = true)
     private String nickname;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "person", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JsonBackReference
     private Set<Message> messages;
 
     public long getId() {

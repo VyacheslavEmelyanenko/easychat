@@ -2,6 +2,7 @@ package ru.sbt.javaschool.easychat.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.sbt.javaschool.easychat.entity.Chat;
 import ru.sbt.javaschool.easychat.repository.ChatRepository;
 
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class ChatService {
 
@@ -35,6 +37,10 @@ public class ChatService {
             setChatClosed(chats);
             return currentChat;
         }
+    }
+
+    public Optional<Chat> getChatById(long id) {
+        return chatRepository.findById(id);
     }
 
     private List<Chat> getListOpenChats() {

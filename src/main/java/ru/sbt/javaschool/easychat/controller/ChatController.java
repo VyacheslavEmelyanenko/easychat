@@ -4,15 +4,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import ru.sbt.javaschool.easychat.entity.Chat;
+import ru.sbt.javaschool.easychat.entity.Message;
 import ru.sbt.javaschool.easychat.model.RequestEntry;
 import ru.sbt.javaschool.easychat.service.ChatService;
+import ru.sbt.javaschool.easychat.service.MessageService;
+
+import java.util.List;
 
 @Controller
 public class ChatController {
 
     @Autowired
     ChatService chatService;
+
+    @Autowired
+    MessageService messageService;
 
     @ResponseStatus(HttpStatus.CREATED)
     @GetMapping("/create")
@@ -21,9 +27,20 @@ public class ChatController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping("/send")
+    @PostMapping(path = "/send", consumes = "application/json")
     public void send(@RequestBody RequestEntry requestEntry) {
+        messageService.receiveMsg(requestEntry);
+    }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(path = "/message", produces = "application/json")
+    public @ResponseBody List<Message> message() {
+        return messageService.getMessagesCurrentChat();
+    }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(path = "/message/{id}", produces = "application/json")
+    public @ResponseBody List<Message> messagesByIdChat(@PathVariable long id) {
+        return messageService.getMessagesByIdChat(id);
     }
 }

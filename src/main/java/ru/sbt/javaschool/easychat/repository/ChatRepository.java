@@ -17,7 +17,6 @@ public interface ChatRepository extends CrudRepository<Chat, Long> {
     List<Chat> findByOpenedTrueOrderByStartDateDesc();
 
     @Modifying
-    @Transactional
     @Query("update Chat c set c.endDate = :date, c.opened = false where c.id in :ids")
     int setOpenedFalse(@Param("date") LocalDateTime endTime, @Param("ids") Iterable<Long> ids);
 }

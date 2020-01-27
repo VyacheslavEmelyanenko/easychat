@@ -2,11 +2,19 @@ package ru.sbt.javaschool.easychat.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.sbt.javaschool.easychat.entity.Chat;
 import ru.sbt.javaschool.easychat.entity.Message;
+import ru.sbt.javaschool.easychat.entity.Person;
 import ru.sbt.javaschool.easychat.model.RequestEntry;
 import ru.sbt.javaschool.easychat.repository.MessageRepository;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
+@Transactional
 @Service
 public class MessageService {
     @Autowired
@@ -20,9 +28,29 @@ public class MessageService {
 
     public void receiveMsg(RequestEntry requestEntry) {
         Message message = new Message();
+        Person person;
+
+        Optional<Person> optionalPerson = personService.findPersonByNickname(requestEntry.getNickname());
+        person = optionalPerson.orElseGet(() -> personService.createPerson(requestEntry.getNickname()));
+
         message.setChat(chatService.getCurrentChat());
-
+        message.setPerson(person);
         message.setMessage(requestEntry.getMessage());
+        message.setDate(LocalDateTime.now());
+        messageRepository.save(message);
+    }
 
+    public List<Message> getMessagesCurrentChat() {
+        List<Message> messages = messageRepository.findBychat(chatService.getCurrentChat());
+        return messages;
+    }
+
+    public List<Message> getMessagesByIdChat(long id) {
+        Chat chat;
+        if (chatService.getChatById(id).isPresent()) chat = chatService.getChatById(id).get();
+        else {
+            throw new NoSuchElementException("No chat with id = " + id);
+        }
+        return messageRepository.findBychat(chat);
     }
 }

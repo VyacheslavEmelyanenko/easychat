@@ -1,5 +1,9 @@
 package ru.sbt.javaschool.easychat.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -8,7 +12,8 @@ import java.util.Set;
 @Table(name = "chat")
 public class Chat {
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator="increment")
+    @GenericGenerator(name="increment", strategy = "increment")
     @Column(name = "id", unique = true, nullable = false)
     private long id;
 

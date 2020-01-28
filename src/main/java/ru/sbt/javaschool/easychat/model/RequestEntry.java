@@ -1,8 +1,17 @@
 package ru.sbt.javaschool.easychat.model;
 
-public class RequestEntry {
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+public class RequestEntry {
+    @NotBlank(message = "Nickname must not be empty")
+    @Length(max = 30, message = "Nickname length should be less then 30")
     private String nickname;
+
+    @NotBlank(message = "Message must not be empty")
+    @Length(max = 255, message = "Message length should be less then 30")
     private String message;
 
     public String getNickname() {

@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.sbt.javaschool.easychat.entity.Chat;
 import ru.sbt.javaschool.easychat.entity.Message;
 import ru.sbt.javaschool.easychat.entity.Person;
+import ru.sbt.javaschool.easychat.exception.NoChatException;
 import ru.sbt.javaschool.easychat.model.RequestEntry;
 import ru.sbt.javaschool.easychat.repository.MessageRepository;
 
@@ -41,16 +42,11 @@ public class MessageService {
     }
 
     public List<Message> getMessagesCurrentChat() {
-        List<Message> messages = messageRepository.findBychat(chatService.getCurrentChat());
-        return messages;
+        return messageRepository.findBychat(chatService.getCurrentChat());
     }
 
     public List<Message> getMessagesByIdChat(long id) {
-        Chat chat;
-        if (chatService.getChatById(id).isPresent()) chat = chatService.getChatById(id).get();
-        else {
-            throw new NoSuchElementException("No chat with id = " + id);
-        }
+        Chat chat = chatService.getChatById(id);
         return messageRepository.findBychat(chat);
     }
 }

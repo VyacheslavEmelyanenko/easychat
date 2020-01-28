@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.sbt.javaschool.easychat.entity.Chat;
+import ru.sbt.javaschool.easychat.exception.NoChatException;
 import ru.sbt.javaschool.easychat.repository.ChatRepository;
 
 import java.time.LocalDateTime;
@@ -18,7 +19,7 @@ public class ChatService {
     @Autowired
     ChatRepository chatRepository;
 
-    public Chat newChat() {
+    public void newChat() {
         Chat newChat = new Chat();
         List<Chat> chats = getListOpenChats();
         if (chats.size() > 0) {
@@ -26,11 +27,14 @@ public class ChatService {
         }
         newChat.setStartDate(LocalDateTime.now());
         newChat.setOpened(true);
-        return chatRepository.save(newChat);
+        chatRepository.save(newChat);
     }
 
     public Chat getCurrentChat() {
         List<Chat> chats = chatRepository.findByOpenedTrueOrderByStartDateDesc();
+
+        if (chats.isEmpty()) throw new NoChatException("There is no open chat");
+
         if (chats.size() == 1) return chats.get(0);
         else {
             Chat currentChat = chats.remove(0);
@@ -39,8 +43,10 @@ public class ChatService {
         }
     }
 
-    public Optional<Chat> getChatById(long id) {
-        return chatRepository.findById(id);
+    public Chat getChatById(long id) {
+        Optional<Chat> chat = chatRepository.findById(id);
+        if (chat.isPresent()) return chat.get();
+        else throw new NoChatException("There is no such chat with id = " + id);
     }
 
     private List<Chat> getListOpenChats() {

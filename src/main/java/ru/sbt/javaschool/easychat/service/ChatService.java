@@ -8,9 +8,9 @@ import ru.sbt.javaschool.easychat.exception.NoChatException;
 import ru.sbt.javaschool.easychat.repository.ChatRepository;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -31,12 +31,13 @@ public class ChatService {
     }
 
     public Chat getCurrentChat() {
-        List<Chat> chats = chatRepository.findByOpenedTrueOrderByStartDateDesc();
+        List<Chat> chats = chatRepository.findByOpenedTrue();
 
         if (chats.isEmpty()) throw new NoChatException("There is no open chat");
 
         if (chats.size() == 1) return chats.get(0);
         else {
+            chats.sort(Comparator.comparing(Chat::getStartDate).reversed());
             Chat currentChat = chats.remove(0);
             setChatClosed(chats);
             return currentChat;
@@ -53,10 +54,10 @@ public class ChatService {
         return chatRepository.findByOpenedTrue();
     }
 
-    private int setChatClosed(List<Chat> chats) {
-        return chatRepository.setOpenedFalse(LocalDateTime.now(), chats.stream()
-                                                                                .mapToLong(Chat::getId)
-                                                                                .boxed()
-                                                                                .collect(Collectors.toList()));
+    private void setChatClosed(List<Chat> chats) {
+        for (Chat chat : chats) {
+            chat.setOpened(false);
+            chat.setEndDate(LocalDateTime.now());
+        }
     }
 }

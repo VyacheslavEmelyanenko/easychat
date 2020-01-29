@@ -6,8 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.sbt.javaschool.easychat.entity.Person;
 import ru.sbt.javaschool.easychat.repository.PersonRepository;
 
-import java.util.Optional;
-
 @Transactional
 @Service
 public class PersonService {
@@ -20,9 +18,9 @@ public class PersonService {
         return personRepository.save(person);
     }
 
-    public Optional<Person> findPersonByNickname(String nickname) {
+    public Person findPersonByNickname(String nickname) {
         Person person = personRepository.findByNickname(nickname);
-        if (person == null) return Optional.empty();
-        else return Optional.of(person);
+        if (person == null) return createPerson(nickname);
+        else return person;
     }
 }

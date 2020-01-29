@@ -1,7 +1,5 @@
 package ru.sbt.javaschool.easychat.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -68,4 +66,5 @@ public class Chat {
     public void setMessages(Set<Message> messages) {
         this.messages = messages;
     }
+
 }

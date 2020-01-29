@@ -3,7 +3,6 @@ package ru.sbt.javaschool.easychat.model;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 public class RequestEntry {
     @NotBlank(message = "Nickname must not be empty")

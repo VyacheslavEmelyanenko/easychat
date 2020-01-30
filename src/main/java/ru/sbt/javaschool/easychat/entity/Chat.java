@@ -15,10 +15,10 @@ public class Chat {
     @Column(name = "id", unique = true, nullable = false)
     private long id;
 
-    @Column(name = "start_Date")
+    @Column(name = "startDate")
     private LocalDateTime startDate;
 
-    @Column(name = "end_Date")
+    @Column(name = "endDate")
     private LocalDateTime endDate;
 
     @Column(name = "opened")

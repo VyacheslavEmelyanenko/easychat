@@ -1,27 +1,25 @@
 package ru.sbt.javaschool.easychat.service;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.sbt.javaschool.easychat.entity.Person;
 import ru.sbt.javaschool.easychat.repository.PersonRepository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = PersonServiceTest.PersonServiceTestConfiguration.class)
-class PersonServiceTest {
+@ExtendWith(SpringExtension.class)
+public class PersonServiceTest {
 
-    @Configuration
-    static class PersonServiceTestConfiguration {
+    @TestConfiguration
+    public static class PersonServiceTestConfiguration {
         @Bean
         public PersonService personService() {
             return new PersonService();
@@ -38,7 +36,7 @@ class PersonServiceTest {
     Person person;
 
     @Test
-    void testCreatePerson() {
+    public void testCreatePerson() {
         String nickname = "Alex";
         ArgumentCaptor<Person> captor = ArgumentCaptor.forClass(Person.class);
 
@@ -49,7 +47,7 @@ class PersonServiceTest {
     }
 
     @Test
-    void testFindPersonByNickname_whenPersonExist() {
+    public void testFindPersonByNickname_whenPersonExist() {
         String nickname = "Alex";
         when(person.getNickname()).thenReturn(nickname);
         when(personRepository.findByNickname(nickname)).thenReturn(person);
@@ -59,7 +57,7 @@ class PersonServiceTest {
     }
 
     @Test
-    void testFindPersonByNickname_whenPersonNotExist() {
+    public void testFindPersonByNickname_whenPersonNotExist() {
         String nickname = "Alex";
         when(person.getNickname()).thenReturn(nickname);
         when(personRepository.findByNickname(nickname)).thenReturn(null);

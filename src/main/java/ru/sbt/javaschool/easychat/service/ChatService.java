@@ -19,11 +19,14 @@ public class ChatService {
     @Autowired
     ChatRepository chatRepository;
 
+    /**
+     * Закрытие всех открытых чатов и открытие нового чата
+     */
     public void newChat() {
         Chat newChat = new Chat();
-        List<Chat> chats = getListOpenChats();
+        List<Chat> chats = chatRepository.findByOpenedTrue();
         if (chats.size() > 0) {
-            setChatClosed(chats);
+            setChatsClosed(chats);
         }
         newChat.setStartDate(LocalDateTime.now());
         newChat.setOpened(true);
@@ -39,7 +42,7 @@ public class ChatService {
         else {
             chats.sort(Comparator.comparing(Chat::getStartDate).reversed());
             Chat currentChat = chats.remove(0);
-            setChatClosed(chats);
+            setChatsClosed(chats);
             return currentChat;
         }
     }
@@ -50,11 +53,7 @@ public class ChatService {
         else throw new NoChatException("There is no such chat with id = " + id);
     }
 
-    private List<Chat> getListOpenChats() {
-        return chatRepository.findByOpenedTrue();
-    }
-
-    private void setChatClosed(List<Chat> chats) {
+    private void setChatsClosed(List<Chat> chats) {
         for (Chat chat : chats) {
             chat.setOpened(false);
             chat.setEndDate(LocalDateTime.now());

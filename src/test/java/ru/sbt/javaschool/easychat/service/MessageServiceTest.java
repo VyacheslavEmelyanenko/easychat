@@ -1,15 +1,14 @@
 package ru.sbt.javaschool.easychat.service;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.sbt.javaschool.easychat.entity.Chat;
 import ru.sbt.javaschool.easychat.entity.Message;
 import ru.sbt.javaschool.easychat.entity.Person;
@@ -26,12 +25,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = MessageServiceTest.MessageServiceTestConfiguration.class)
-class MessageServiceTest {
+@ExtendWith(SpringExtension.class)
+public class MessageServiceTest {
 
-    @Configuration
-    static class MessageServiceTestConfiguration {
+    @TestConfiguration
+    public static class MessageServiceTestConfiguration {
         @Bean
         public MessageService messageService() {
             return new MessageService();
@@ -68,7 +66,7 @@ class MessageServiceTest {
     Person person;
 
     @Test
-    void testReceiveMsg() {
+    public void testReceiveMsg() {
         String nickname = "Alex";
         String message = "message";
         when(personRepository.findByNickname(nickname)).thenReturn(person);
@@ -87,7 +85,7 @@ class MessageServiceTest {
     }
 
     @Test
-    void testGetMessagesCurrentChat() {
+    public void testGetMessagesCurrentChat() {
         when(chatRepository.findByOpenedTrue()).thenReturn(Arrays.asList(chat));
         when(messageRepository.findBychat(chat)).thenReturn(Arrays.asList(messageId1, messageId2));
 
@@ -96,7 +94,7 @@ class MessageServiceTest {
     }
 
     @Test
-    void testGetMessagesByIdChat() {
+    public void testGetMessagesByIdChat() {
         when(chatRepository.findById(1L)).thenReturn(Optional.of(chat));
         when(messageRepository.findBychat(chat)).thenReturn(Arrays.asList(messageId1, messageId2));
 

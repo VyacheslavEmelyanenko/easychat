@@ -1,18 +1,14 @@
 package ru.sbt.javaschool.easychat.service;
 
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.sbt.javaschool.easychat.entity.Chat;
 import ru.sbt.javaschool.easychat.exception.NoChatException;
 import ru.sbt.javaschool.easychat.repository.ChatRepository;
@@ -26,12 +22,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = ChatServiceTest.ChatServiceTestConfiguration.class)
-class ChatServiceTest {
+@ExtendWith(SpringExtension.class)
+public class ChatServiceTest {
 
     @TestConfiguration
-    static class ChatServiceTestConfiguration {
+    public static class ChatServiceTestConfiguration {
         @Bean
         public ChatService chatService() {
             return new ChatService();
@@ -50,38 +45,25 @@ class ChatServiceTest {
     @Spy
     Chat spyChatId1, spyChatId2;
 
-//    @BeforeEach
-//    public void setUp() {
-//        when(chat1.getId()).thenReturn(1L);
-//        when(chat2.getId()).thenReturn(2L);
-//        when(chat2.isOpened()).thenReturn(true);
-//        when(chatRepository.findById(1L)).thenReturn(Optional.of(chat1));
-//    }
-
-    @Before
-    public void setUp() {
-        when(chatId1.getId()).thenReturn(1L);
-    }
-
     @Test
-    void testNewChat_whenOpenChatNotExist() {
+    public void testNewChat_whenOpenChatNotExist() {
         when(chatRepository.findByOpenedTrue()).thenReturn(new ArrayList<>());
         chatService.newChat();
-        verify(chatRepository, times(1)).save(ArgumentCaptor.forClass(Chat.class).capture());
+        verify(chatRepository, times(1)).save(any(Chat.class));
     }
 
     @Test
-    void testNewChat_whenChatsExist() {
+    public void testNewChat_whenChatsExist() {
         when(chatId1.getId()).thenReturn(1L);
         when(chatRepository.findByOpenedTrue()).thenReturn(Arrays.asList(chatId1));
 
         chatService.newChat();
-        verify(chatRepository, times(1)).save(ArgumentCaptor.forClass(Chat.class).capture());
+        verify(chatRepository, times(1)).save(any(Chat.class));
         verify(chatId1, times(1)).setOpened(false);
     }
 
     @Test
-    void testGetCurrentChat_whenOneOpenChat() {
+    public void testGetCurrentChat_whenOneOpenChat() {
         when(chatId1.getId()).thenReturn(1L);
         when(chatRepository.findByOpenedTrue())
                 .thenReturn(new ArrayList<>(Arrays.asList(chatId1)));
@@ -91,7 +73,7 @@ class ChatServiceTest {
     }
 
     @Test
-    void testGetCurrentChat_whenTwoOpenChat() {
+    public void testGetCurrentChat_whenTwoOpenChat() {
         spyChatId1.setId(1L);
         spyChatId1.setStartDate(LocalDateTime.parse("2020-01-01T12:00:00"));
         spyChatId2.setId(2L);
@@ -105,13 +87,13 @@ class ChatServiceTest {
     }
 
     @Test
-    void testGetCurrentChat_whenOpenChatNotExist() {
+    public void testGetCurrentChat_whenOpenChatNotExist() {
         when(chatRepository.findByOpenedTrue()).thenReturn(new ArrayList<>());
         assertThrows(NoChatException.class, () -> chatService.getCurrentChat());
     }
 
     @Test
-    void testGetChatById() {
+    public void testGetChatById() {
         when(chatId1.getId()).thenReturn(1L);
         when(chatRepository.findById(1L)).thenReturn(Optional.of(chatId1));
 
@@ -120,7 +102,7 @@ class ChatServiceTest {
     }
 
     @Test
-    void testGetChatById_whenIdNotExist() {
+    public void testGetChatById_whenIdNotExist() {
         assertThrows(NoChatException.class, () -> chatService.getChatById(5));
     }
 }

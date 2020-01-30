@@ -10,7 +10,7 @@ public class RequestEntry {
     private String nickname;
 
     @NotBlank(message = "Message must not be empty")
-    @Length(max = 255, message = "Message length should be less then 30")
+    @Length(max = 255, message = "Message length should be less then 255")
     private String message;
 
     public String getNickname() {

@@ -30,16 +30,19 @@ public class ChatController {
     /**
      * @param requestEntry входной json сообщения
      */
+    @ResponseStatus(HttpStatus.OK)
     @PostMapping(path = "/send", consumes = "application/json")
     public void send(@Valid @RequestBody RequestEntry requestEntry) {
         messageService.receiveMsg(requestEntry);
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "/message", produces = "application/json")
     public @ResponseBody List<Message> message() {
         return messageService.getMessagesCurrentChat();
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "/message/{id}", produces = "application/json")
     public @ResponseBody List<Message> messagesByIdChat(@PathVariable long id) {
         return messageService.getMessagesByIdChat(id);
